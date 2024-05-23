@@ -1,25 +1,24 @@
 import ProductModel from "../model/product.model.js";
 export default class ProductController {
+  //get all products
   getAll(req, res) {
     let products = ProductModel.getAll();
-    res.json({ products });
+    res.status(200).send(products);
   }
 
   //rating
   rateProduct(req, res) {
     let { productID, rating } = req.query;
     let userID = req.payload.id;
-    console.log(productID)
-    let error = ProductModel.rate(userID, productID, rating);
-
-    if (error) {
-      res.status(400).send(error);
-    } else {
+    try {
+      ProductModel.rate(userID, productID, rating);
       res.status(201).send("Product rated successfully");
+    } catch (err) {
+      res.status(err.statusCode).send(err.message);
     }
   }
 
-  //get all products
+  //get product by id
   getProduct(req, res) {
     let product = ProductModel.get(req.params.id);
     if (product) {
@@ -40,7 +39,6 @@ export default class ProductController {
   //fiter products
   filterProduct(req, res) {
     const { minPrice, maxPrice } = req.query;
-    console.log(req.query);
     let products = ProductModel.filter(minPrice, maxPrice);
 
     if (products) {

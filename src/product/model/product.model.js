@@ -1,3 +1,4 @@
+import { ApplicationError } from "../../middlewares/errorHandling.middleware.js";
 import UserModel from "../../user/model/userModel.js";
 
 let products = [
@@ -29,19 +30,15 @@ export default class ProductModel {
   //rate a product
   static rate(userID, productID, rating) {
     //if user not found
-    console.log(productID);
-    console.log(userID);
-    console.log(rating);
-
     if (rating > 5 && rating < 0)
-      return { success: "false", msg: "Rating not in range" };
+      throw new ApplicationError(400, "Rating not in range");
 
     let userData = UserModel.getALL().find((u) => u.id == userID);
-    if (!userData) return { success: "false", msg: "User Not Found" };
+    if (!userData) throw new ApplicationError(400, "User Not Found");
 
     //if product id not found
     let product = products.find((i) => i.id == productID);
-    if (!product) return { success: "false", msg: "Product Not Found" };
+    if (!product) throw new ApplicationError(400, "Product Not Found");
 
     //if product does'nt have a rating
     let productRating = product.rating;
