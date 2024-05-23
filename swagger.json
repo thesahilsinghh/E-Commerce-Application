@@ -1,0 +1,25 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "E-Coomerce Api",
+    "description": "API for E-commerce application",
+    "version": "1.0.0"
+  },
+  "host": "localhost:4200",
+  "securityDefinitions": {
+    "JWT": {
+      "in": "body",
+      "name": "payload",
+      "type": "apiKey"
+    }
+  },
+  "paths": {
+    "/api/products/": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get Products",
+        "description": "User will get all products"
+      }
+    }
+  }
+}

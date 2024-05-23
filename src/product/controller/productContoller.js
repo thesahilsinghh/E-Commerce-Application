@@ -2,9 +2,24 @@ import ProductModel from "../model/product.model.js";
 export default class ProductController {
   getAll(req, res) {
     let products = ProductModel.getAll();
-    res.status(200).send(products);
+    res.json({ products });
   }
 
+  //rating
+  rateProduct(req, res) {
+    let { productID, rating } = req.query;
+    let userID = req.payload.id;
+    console.log(productID)
+    let error = ProductModel.rate(userID, productID, rating);
+
+    if (error) {
+      res.status(400).send(error);
+    } else {
+      res.status(201).send("Product rated successfully");
+    }
+  }
+
+  //get all products
   getProduct(req, res) {
     let product = ProductModel.get(req.params.id);
     if (product) {
@@ -14,12 +29,15 @@ export default class ProductController {
     }
   }
 
+  //add products
   addProduct(req, res) {
     let data = req.body;
-    ProductModel.add(data);
+    const imageURL = "./public/images/" + req.file.filename;
+    ProductModel.add(data, imageURL);
     res.status(201).send("Added Successfully");
   }
 
+  //fiter products
   filterProduct(req, res) {
     const { minPrice, maxPrice } = req.query;
     console.log(req.query);
@@ -32,6 +50,7 @@ export default class ProductController {
     }
   }
 
+  //updating
   updateProduct(req, res) {
     let data = req.body;
     let updatedProduct = ProductModel.update(req.params.id, data);
@@ -42,6 +61,8 @@ export default class ProductController {
       res.status(404).send("No Product Found");
     }
   }
+
+  //deleting
   deleteProduct(req, res) {
     let product = ProductModel.delete(req.params.id);
     if (product) {
