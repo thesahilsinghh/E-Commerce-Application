@@ -9,10 +9,8 @@ import cartRoute from "./src/cart/cart.routes.js";
 import cors from "cors";
 import swagger from "swagger-ui-express";
 import apiDocs from "./swagger.json" assert { type: "json" };
-import {
-  loggerMiddleware,
-  errorLoggerMiddleware,
-} from "./src/middlewares/logger.middleware.js";
+import loggerMiddleware from "./src/middlewares/logger.middleware.js";
+import { ApplicationError } from "./src/middlewares/errorHandling.middleware.js";
 //defining app
 const app = express();
 
@@ -24,16 +22,25 @@ app.use(cors());
 app.use("/api/user/", userRoute);
 app.use("/api/products/", loggerMiddleware, jwtAuthenticate, productRouter);
 app.use("/api/cart/", loggerMiddleware, jwtAuthenticate, cartRoute);
+app.get("/", (req, res) => {
+  res.status(200).send("Welcome to E-Commerce API");
+});
 
 //for documentation
 app.use("/api/api-docs/", swagger.serve, swagger.setup(apiDocs));
 
-//error handling
-app.use(errorLoggerMiddleware);
-
 //if route is not valid
 app.use("", (req, res) => {
   res.status(404).send("API not found. Please check your URL.");
+});
+
+//error handling
+app.use((err, req, res, next) => {
+  if (err instanceof ApplicationError) {
+    return res.status(err.statusCode).send(err.message);
+  }
+
+  return res.status(500).send("Something went wrong, please try again later");
 });
 
 //port listens on 4200

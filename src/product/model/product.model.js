@@ -30,7 +30,7 @@ export default class ProductModel {
   //rate a product
   static rate(userID, productID, rating) {
     //if user not found
-    if (rating > 5 && rating < 0)
+    if (rating > 5 || rating < 0)
       throw new ApplicationError(400, "Rating not in range");
 
     let userData = UserModel.getALL().find((u) => u.id == userID);

@@ -7,14 +7,15 @@ export default class ProductController {
   }
 
   //rating
-  rateProduct(req, res) {
+  rateProduct(req, res, next) {
     let { productID, rating } = req.query;
     let userID = req.payload.id;
     try {
       ProductModel.rate(userID, productID, rating);
       res.status(201).send("Product rated successfully");
     } catch (err) {
-      res.status(err.statusCode).send(err.message);
+      console.log("Passing error to error handler");
+      next(err);
     }
   }
 
