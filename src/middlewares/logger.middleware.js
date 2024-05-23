@@ -1,5 +1,5 @@
 import winston from "winston";
-const logger = winston.createLogger({
+const loggerInfo = winston.createLogger({
   level: "info",
   format: winston.format.json(),
   defaultMeta: { service: "request-logging" },
@@ -10,12 +10,26 @@ const logger = winston.createLogger({
   ],
 });
 
-const loggerMiddleware = async (req, res, next) => {
+const loggerError = winston.createLogger({
+  level: "error",
+  format: winston.format.json(),
+  defaultMeta: { service: "request-logging" },
+  transports: [
+    new winston.transports.File({
+      filename: "errorLogs.txt",
+    }),
+  ],
+});
+
+export const loggerMiddleware = async (req, res, next) => {
   if (!req.url.includes("users")) {
     const logData = req.url + " - " + JSON.stringify(req.body);
-    logger.info(logData);
+    loggerInfo.info(logData);
   }
   next();
 };
 
-export default loggerMiddleware;
+export const errorLoggerMiddleware = async (err, req, res, next) => {
+  loggerError.error(err);
+  res.status(503).send("Server got some issues! please try again later");
+};
