@@ -31,7 +31,7 @@ export default class UserController {
       if (isValid) {
         let token = jwt.sign(
           { id: user._id, email: user.email, type: user.type },
-          "sBEQSfVynYsH05Yl1oj1iN0nHDLufhyr",
+          process.env.jwt_token,
           { expiresIn: "1h" }
         );
 

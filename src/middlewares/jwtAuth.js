@@ -5,7 +5,7 @@ const jwtAuthenticate = (req, res, next) => {
     return res.status(401).send("login first");
   }
   try {
-    const payload = jwt.verify(jwtToken, "sBEQSfVynYsH05Yl1oj1iN0nHDLufhyr");
+    const payload = jwt.verify(jwtToken, process.env.jwt_token);
     req.payload = payload;
     next();
   } catch (err) {

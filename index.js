@@ -1,4 +1,5 @@
 //importing packages
+import './env.js';
 import express from "express";
 import productRouter from "./src/features/product/products.route.js";
 import userRoute from "./src/features/user/user.route.js";
@@ -10,7 +11,7 @@ import swagger from "swagger-ui-express";
 import apiDocs from "./swagger.json" assert { type: "json" };
 import loggerMiddleware from "./src/middlewares/logger.middleware.js";
 import { ApplicationError } from "./src/middlewares/errorHandling.middleware.js";
-import {connectToMongoDB} from "./src/config/mongodb.js";
+import { connectToMongoDB } from "./src/config/mongodb.js";
 //defining app
 const app = express();
 
