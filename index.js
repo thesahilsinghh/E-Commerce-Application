@@ -1,16 +1,16 @@
 //importing packages
 import express from "express";
-import productRouter from "./src/product/products.route.js";
-import userRoute from "./src/user/user.route.js";
+import productRouter from "./src/features/product/products.route.js";
+import userRoute from "./src/features/user/user.route.js";
 // import authorizer from "./src/middlewares/basic.auth.js";
 import jwtAuthenticate from "./src/middlewares/jwtAuth.js";
-
-import cartRoute from "./src/cart/cart.routes.js";
+import cartRoute from "./src/features/cart/cart.routes.js";
 import cors from "cors";
 import swagger from "swagger-ui-express";
 import apiDocs from "./swagger.json" assert { type: "json" };
 import loggerMiddleware from "./src/middlewares/logger.middleware.js";
 import { ApplicationError } from "./src/middlewares/errorHandling.middleware.js";
+import {connectToMongoDB} from "./src/config/mongodb.js";
 //defining app
 const app = express();
 
@@ -46,4 +46,5 @@ app.use((err, req, res, next) => {
 //port listens on 4200
 app.listen("4200", () => {
   console.log("Server is listening on 4200");
+  connectToMongoDB();
 });

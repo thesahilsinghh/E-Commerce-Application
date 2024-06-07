@@ -1,0 +1,2 @@
+{"level":"info","message":"/rate?productID=2&rating=9 - {}","service":"request-logging"}
+{"level":"info","message":"/rate?productID=2&rating=4 - {}","service":"request-logging"}
