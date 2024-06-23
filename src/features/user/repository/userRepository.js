@@ -19,7 +19,7 @@ class UserRepository {
     try {
       let db = await getDB();
       let collection = db.collection("users");
-      return collection.findOne({ email });
+      return await collection.findOne({ email });
     } catch (err) {
       throw new ApplicationError(
         503,

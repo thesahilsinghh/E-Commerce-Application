@@ -1,51 +1,84 @@
+import { ApplicationError } from "../../../middlewares/errorHandling.middleware.js";
 import ProductModel from "../model/product.model.js";
+import ProductRepository from "../repository/product.repository.js";
 export default class ProductController {
-  //get all products
-  getAll(req, res) {
-    let products = ProductModel.getAll();
-    res.status(200).send(products);
+  constructor() {
+    this.productRepository = new ProductRepository();
   }
 
-  //rating
-  rateProduct(req, res, next) {
-    let { productID, rating } = req.query;
-    let userID = req.payload.id;
+  //get all products
+  async getAll(req, res) {
     try {
-      ProductModel.rate(userID, productID, rating);
-      res.status(201).send("Product rated successfully");
+      let products = await this.productRepository.getAll();
+      res.status(200).send(products);
     } catch (err) {
-      console.log("Passing error to error handler");
-      next(err);
+      throw new ApplicationError(500, "Error found! please try again later");
     }
   }
 
   //get product by id
-  getProduct(req, res) {
-    let product = ProductModel.get(req.params.id);
-    if (product) {
-      res.status(200).send(product);
-    } else {
-      res.status(404).send("Product Not Found with this id");
+  async getProduct(req, res) {
+    try {
+      let product = await this.productRepository.get(req.params.id);
+      if (product) {
+        res.status(200).send(product);
+      } else {
+        res.status(404).send("Product Not Found with this id");
+      }
+    } catch (err) {
+      throw new ApplicationError(500, "Error found! please try again later");
     }
   }
 
   //add products
-  addProduct(req, res) {
-    let data = req.body;
-    const imageURL = "./public/images/" + req.file.filename;
-    ProductModel.add(data, imageURL);
-    res.status(201).send("Added Successfully");
+  async addProduct(req, res) {
+    try {
+      let data = req.body;
+      console.log(data);
+      const imageURL = "./public/images/" + req.file.filename;
+      let sizes = req.body.size.split(",");
+      let product = new ProductModel(
+        req.body.name,
+        sizes,
+        parseFloat(req.body.price),
+        imageURL,
+        req.body.desc
+      );
+      await this.productRepository.add(product);
+      res.status(201).send("Added Successfully");
+    } catch (err) {
+      throw new ApplicationError(500, "Error found! please try again later");
+    }
   }
 
   //fiter products
-  filterProduct(req, res) {
-    const { minPrice, maxPrice } = req.query;
-    let products = ProductModel.filter(minPrice, maxPrice);
+  async filterProduct(req, res) {
+    try {
+      console.log('hello')
+      
+      const { minPrice, maxPrice } = req.query;
+      let products = await this.productRepository.filter(minPrice, maxPrice);
 
-    if (products) {
-      res.status(200).send(products);
-    } else {
-      res.status(404).send("No Product Found");
+      if (products) {
+        res.status(200).send(products);
+      } else {
+        res.status(404).send("No Product Found");
+      }
+    } catch (err) {
+      throw new ApplicationError(500, "Error found! please try again later");
+    }
+  }
+
+  //rating
+  async rateProduct(req, res, next) {
+    try {
+      let { productID, rating } = req.query;
+      let userID = req.payload.id;
+      let product =await this.productRepository.rate(productID, userID, rating);
+      res.status(201).send("Rated Successfully!");
+    } catch (err) {
+      console.log("Passing error to error handler");
+      next(err);
     }
   }
 

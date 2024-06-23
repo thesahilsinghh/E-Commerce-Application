@@ -1,26 +1,10 @@
 import { ApplicationError } from "../../../middlewares/errorHandling.middleware.js";
 import UserModel from "../../user/model/userModel.js";
 
-let products = [
-  {
-    id: 1,
-    imageURL: "-",
-    name: "Denim Jeans",
-    size: ["S", "M", "L", "XL"],
-    price: 1999,
-  },
-  {
-    id: 2,
-    imageURL: "",
-    name: "Shoes",
-    size: ["8", "9", "11"],
-    price: 5000,
-  },
-];
 //product class
 export default class ProductModel {
-  constructor(id, imageURL, name, size, price) {
-    this.id = id;
+  constructor(name, size, price, imageURL, desc, id) {
+    this._id = id;
     this.imageURL = imageURL;
     this.name = name;
     this.size = size;
@@ -62,25 +46,6 @@ export default class ProductModel {
     }
   }
 
-  //returning all producs
-  static getAll() {
-    return products;
-  }
-
-  //filtering by price min & max
-  static filter(minPrice, maxPrice) {
-    let arr = products.filter((item) => {
-      return item.price >= minPrice && item.price <= maxPrice;
-    });
-    return arr;
-  }
-
-  //get product by ids
-  static get(id) {
-    let product = products.find((item) => id == item.id);
-    return product;
-  }
-
   //updating a particular product
   static update(id, data) {
     let idx = products.indexOf((item) => item.id == id);
@@ -90,19 +55,6 @@ export default class ProductModel {
       products[idx].price = data.price;
       return products[idx];
     }
-  }
-
-  //adding a new product
-  static add(data, imageURL) {
-    let id = products.length + 1;
-    let newProduct = new ProductModel(
-      id,
-      imageURL,
-      data.name,
-      data.size.split(","),
-      data.price
-    );
-    products.push(newProduct);
   }
 
   //deleting a product
