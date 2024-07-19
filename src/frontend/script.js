@@ -1,5 +1,5 @@
 let token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyQGdtYWlsLmNvbSIsInR5cGUiOiJjdXN0b21lciIsImlhdCI6MTcxNTk1MzQ4MCwiZXhwIjoxNzE1OTU3MDgwfQ.d4xXxPHI8YS9fcLqnRKXrGu57oSgfilsHOU4zEakg-U";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NjgwZmFhNmMwZTkyMjVmYWNiYTQ2NSIsImVtYWlsIjoidXNlcjFAZW1haWwuY29tIiwidHlwZSI6InNlbGxlciIsImlhdCI6MTcyMTAxOTg3OCwiZXhwIjoxNzIxMDIzNDc4fQ.orjENKL_GA2TBNV04fTtKo-TGCFrAnTrwXVw1ApCCSU";
 fetch("http://localhost:4200/api/products/", {
   headers: {
     authorization: token,
@@ -7,7 +7,10 @@ fetch("http://localhost:4200/api/products/", {
 })
   .then((response) => response.json())
   .then((data) => {
-    let products = data.products;
+    console.log("hello")
+      console.log(data);
+      
+    let products = data;
     let table = document.getElementById("products");
     products.forEach((element) => {
       let row = document.createElement("tr");

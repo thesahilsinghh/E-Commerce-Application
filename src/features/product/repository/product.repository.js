@@ -23,6 +23,7 @@ export default class ProductRepository {
     return products;
   }
   catch(err) {
+    console.log(err + "SD");
     throw new ApplicationError(
       500,
       "Error in database connection! please try again later."
@@ -64,14 +65,43 @@ export default class ProductRepository {
     );
   }
 
+  //problem with duplicacy
+  // async rate(productID, userID, rating) {
+  //   let db = await getDB();
+  //   let collection = await db.collection("products");
+
+  //   return await collection.updateOne(
+  //     { _id: new ObjectId(productID) },
+  //     {
+  //       $push: { ratings: { userID: new ObjectId(userID), rating } },
+  //     }
+  //   );
+  // }
+  // catch(err) {
+  //   console.log(err);
+  //   throw new ApplicationError(
+  //     500,
+  //     "Error in database connection! please try again later."
+  //   );
+  // }
+
   async rate(productID, userID, rating) {
     let db = await getDB();
     let collection = await db.collection("products");
 
+    //1. deleteting if the user exist
+    await collection.updateOne(
+      { _id: new ObjectId(productID) },
+      {
+        $pull: { ratings: { userID: new ObjectId(userID) } },
+      }
+    );
+
+    //2. rating product
     return await collection.updateOne(
       { _id: new ObjectId(productID) },
       {
-        $push: { ratings: { userID: new ObjectId(userID), rating } },
+        $push: { ratings: { userID: new ObjectId(userID), rating: rating } },
       }
     );
   }
@@ -82,4 +112,5 @@ export default class ProductRepository {
       "Error in database connection! please try again later."
     );
   }
+
 }

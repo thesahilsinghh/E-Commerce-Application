@@ -1,35 +1,40 @@
 import CartModel from "../model/cart.model.js";
+import CartRepository from "../repository/cart.repositoy.js";
 
 export default class CartController {
-  getItems(req, res) {
-    let userID = req.payload.id;
-    let cart = CartModel.getItems(userID);
+  constructor() {
+    this.cartRepository = new CartRepository();
+  }
 
-    if (!cart) {
-      res.status(200).send("User cart's empty");
-    } else {
+  //get items
+  async getItems(req, res) {
+    try {
+      let userID = req.payload.id;
+      let cart = await this.cartRepository.getItems(userID);
       res.status(200).send(cart);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send("Error found! Please try again later");
     }
   }
-  addItem(req, res) {
+
+  //add item
+  async addItem(req, res) {
     let { productID, quantity } = req.body;
     let userID = req.payload.id;
-    let error = CartModel.add(userID, productID, quantity);
-    if (error) {
-      res.status(400).send({ error: error });
-    } else {
-      res.status(201).send("Product added successfully");
-    }
+    let cartProduct = new CartModel(userID, productID, quantity);
+    await this.cartRepository.add(cartProduct);
+    return res.status(200).send("Product added to cart!");
   }
 
-  deleteItem(req, res) {
-    let { productID } = req.params;
+  async deleteItem(req, res) {
+    let { productID } = req.body;
     let userID = req.payload.id;
-    let error = CartModel.delete(userID, productID);
-    if (error) {
-      res.status(400).send({ error: error });
+    let isDone = await this.cartRepository.delete(userID, productID);
+    if (!isDone) {
+      res.status(400).send("Product not found!");
     } else {
-      res.status(201).send("Product added successfully");
+      res.status(201).send("Product deleted successfully");
     }
   }
 }

@@ -1,8 +1,8 @@
 import { MongoClient } from "mongodb";
 
 let clientInstance;
-export const connectToMongoDB = () => {
-  MongoClient.connect(process.env.DB_URL)
+export const connectToMongoDB = async () => {
+  await MongoClient.connect(process.env.DB_URL)
     .then((client) => {
       clientInstance = client;
       console.log("Connection Established!");

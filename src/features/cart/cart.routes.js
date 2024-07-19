@@ -8,7 +8,13 @@ let cartController = new CartController();
 
 //setting up route for cart
 
-cartRoute.get("/", cartController.getItems);
-cartRoute.post("/", cartController.addItem);
-cartRoute.post("/delete/:productID", cartController.deleteItem);
+cartRoute.get("/", (req, res) => {
+  cartController.getItems(req, res);
+});
+cartRoute.post("/", (req, res) => {
+  cartController.addItem(req, res);
+});
+cartRoute.delete("/delete/", (req, res) => {
+  cartController.deleteItem(req, res);
+});
 export default cartRoute;
